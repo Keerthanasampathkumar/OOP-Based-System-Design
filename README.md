@@ -38,6 +38,109 @@ To design and implement an Online Course Management System using Object-Oriented
 
     Features: Course creation, enrollment, assignment submission, grading
 
+```js
+class User {
+    constructor(id, name, email) {
+        this._id = id;
+        this._name = name;
+        this._email = email;
+    }
+
+    login() {
+        console.log(`${this._name} has logged in.`);
+    }
+
+    get name() {
+        return this._name;
+    }
+
+    set name(newName) {
+        this._name = newName;
+    }
+}
+
+class Student extends User {
+    constructor(id, name, email) {
+        super(id, name, email);
+        this.enrolledCourses = [];
+        this.grades = [];
+    }
+
+    enroll(course) {
+        course.enroll(this);
+        this.enrolledCourses.push(course);
+    }
+
+    viewGrades() {
+        return this.grades.map(grade => `${grade.assignment.title}: ${grade.getGrade()}`);
+    }
+}
+
+class Instructor extends User {
+    constructor(id, name, email) {
+        super(id, name, email);
+        this.createdCourses = [];
+    }
+
+    createCourse(title, description) {
+        const course = new Course(title, description, this);
+        this.createdCourses.push(course);
+        return course;
+    }
+
+    gradeAssignment(assignment, student, score) {
+        const grade = new Grade(student, assignment, score);
+        student.grades.push(grade);
+        return grade;
+    }
+}
+
+class Course {
+    constructor(title, description, instructor) {
+        this.title = title;
+        this.description = description;
+        this.instructor = instructor;
+        this.students = [];
+        this.assignments = [];
+    }
+
+    enroll(student) {
+        this.students.push(student);
+    }
+
+    addAssignment(title, dueDate) {
+        const assignment = new Assignment(title, dueDate);
+        this.assignments.push(assignment);
+        return assignment;
+    }
+}
+
+class Assignment {
+    constructor(title, dueDate) {
+        this.title = title;
+        this.dueDate = dueDate;
+        this.submissions = new Map();
+    }
+
+    submit(student, content) {
+        this.submissions.set(student.name, content);
+    }
+}
+
+class Grade {
+    constructor(student, assignment, score) {
+        this.student = student;
+        this.assignment = assignment;
+        this.score = score;
+    }
+
+    getGrade() {
+        return this.score;
+    }
+}
+
+```
+
 
 ## OUTPUT:
 <img width="1024" height="1536" alt="a585855d-5823-471b-8cbb-65b0d377202b-1" src="https://github.com/user-attachments/assets/8ca1efdf-723c-4060-9016-d6ccbb95c415" />
